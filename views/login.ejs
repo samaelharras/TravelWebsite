@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            background-image: url("background1.jpg");
+            background-repeat: no-repeat;
+            background-size: 100%;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            -webkit-text-stroke: 1px black;
+        }
+        .cont {
+            position:relative;
+            left:600px;
+            top:50px;
+            color: white;
+
+        }
+         #errorMessage{
+              
+              display:none ;
+              background-color: white;
+              width: 300px;
+              border: 5px solid black;
+              padding: 50px;
+              margin: auto;
+            position: relative;
+         }
+
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Welcome</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Welcome</h1>
+    </div>
+    <div class="cont">
+        <form method="POST">
+            Username:<br>
+            <input type="text" name="user" >
+            <br>
+            Password:<br>
+            <input type="password" name="pass" >
+            <br><br>
+            <input type="submit" value="Login">
+        </form>
+        <br>
+        <a href="registration" style="color:black;">I dont have an account</a>
+    </div>
+    
+ <div id="errorMessage">
+    <h3><r>FAILURE</r></h3>
+    <p>please enter a valid username and passward...</p>
+    </div>
+
+
+</body>
+<script>
+
+var express = require('express');
+
+var cookieparser = require('cookie-parser');
+var session = require('express-session');
+var flash = require('connect-flash');
+var path = require('path');
+var fs = require('fs');  //used to read or write to a file
+const { request } = require('http');
+var app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+
+    secret: 'weblesson',
+    maxAge: 60000 ,
+    saveUninitialized: false,
+    resave: false
+}));
+
+app.use(flash());
+
+
+app.get('/', function (req, res) {
+    res.render('login');
+});
+
+
+app.post('/', function (req, res) {
+    var username = req.body.user;
+    var passward = req.body.pass;
+    if (username == "" || passward == "") {
+        document.getElementById("errorMessage").style.display = "block";
+        //pop message
+    }
+    else {
+        var user = JSON.stringify(username);
+        var pass = JSON.stringify(passward);
+        var MongoClient = require('mongodb').MongoClient;
+        MongoClient.connect("mongodb://127.0.0.1:27017", function (err, client) {
+            if (err) throw err;
+            db.collection('user', function (err, collection) {
+
+                collection.find().toArray(function (err, items) {
+                    if (err) throw err;
+                 
+                });
+
+            });
+        });
+    };
+
+});
+        app.get('/registration', function (req, res) {
+            res.render('registration')
+        });
+
+
+    
+
+    //press login ->take the user ame and the pass to the db->if already exist go to home page if not error message
+    //error mes:(wrong pass, wrong user name or not registered, write your username, write your pass )
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+    app.get('/users', function (req, res) {
+        res.render('index', { title: "express" })
+    });
+    //here we say that if the user wanted to get the home page (/) by calling the localhost:3000 we will
+    //use a function that takes 2 inputs and display to the user the index html file with title express
+    
+    */
+
+
+
+    app.listen(3000);
+
+
+</script>
+</html>
